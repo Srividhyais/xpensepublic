@@ -28,8 +28,3 @@
     grid-template-columns: 1fr;
   }
 }
-
-.modal-overlay-test {
-  background-color: transparent !important;
-  pointer-events: none !important;
-}
