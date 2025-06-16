@@ -157,23 +157,20 @@ export default function Home() {
         </div>
       </div>
 
-      {isOpenExpense && (
-        <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
-          <ExpenseForm
-            setIsOpen={setIsOpenExpense}
-            expenseList={expenseList}
-            setExpenseList={setExpenseList}
-            setBalance={setBalance}
-            balance={balance}
-          />
-        </Modal>
-      )}
+      {/* Modals */}
+      <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
+        <ExpenseForm
+          setIsOpen={setIsOpenExpense}
+          expenseList={expenseList}
+          setExpenseList={setExpenseList}
+          setBalance={setBalance}
+          balance={balance}
+        />
+      </Modal>
 
-      {isOpenBalance && (
-        <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
-          <AddBalForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
-        </Modal>
-      )}
+      <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
+        <AddBalForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
+      </Modal>
     </>
   );
 }
