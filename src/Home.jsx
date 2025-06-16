@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AddBalForm from "./components/AddBalForm";
 import ExpenseForm from "./components/Expense";
-import TransList from "./components/TransList";
-import ExpPieChart from "./components/Piechart";
-import ExpBarChart from "./components/Barchart";
+import TransactionList from "./components/TransList";
+import ExpensePieChart from "./components/Piechart";
+import ExpenseBarChart from "./components/Barchart";
 import Modal from "./components/AddModal";
 import Card from "./components/Card";
 import styles from "./Home.module.css";
@@ -14,7 +14,7 @@ export default function Home() {
   const [expenseList, setExpenseList] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Show/hide modals
+  //Show hide modals
   const [isOpenExpense, setIsOpenExpense] = useState(false);
   const [isOpenBalance, setIsOpenBalance] = useState(false);
 
@@ -23,7 +23,6 @@ export default function Home() {
     entertainment: 0,
     travel: 0,
   });
-
   // eslint-disable-next-line
   const [categoryCount, setCategoryCount] = useState({
     food: 0,
@@ -32,6 +31,7 @@ export default function Home() {
   });
 
   useEffect(() => {
+    //Check localStorage
     const localBalance = localStorage.getItem("balance");
 
     if (localBalance) {
@@ -42,10 +42,12 @@ export default function Home() {
     }
 
     const items = JSON.parse(localStorage.getItem("expenses"));
-    setExpenseList(Array.isArray(items) ? items : []);
+
+    setExpenseList(items || []);
     setIsMounted(true);
   }, []);
 
+  // saving expense list in localStorage
   useEffect(() => {
     if (expenseList.length > 0 || isMounted) {
       localStorage.setItem("expenses", JSON.stringify(expenseList));
@@ -96,6 +98,7 @@ export default function Home() {
     });
   }, [expenseList, isMounted]);
 
+  // saving balance in localStorage
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("balance", balance);
@@ -103,58 +106,59 @@ export default function Home() {
   }, [balance, isMounted]);
 
   return (
-    <>
-      <div className={styles.container}>
-        <h1>Expense Tracker</h1>
+    <div className={styles.container}>
+      <h1>Expense Tracker</h1>
 
-        <div className={styles.cardsWrapper}>
-          <Card
-            title="Wallet Balance"
-            money={balance}
-            buttonText="+ Add Income"
-            buttonType="success"
-            handleClick={() => {
-              setIsOpenBalance(true);
-            }}
-          />
+      {/* Cards and pie chart wrapper */}
 
-          <Card
-            title="Expenses"
-            money={expense}
-            buttonText="+ Add Expense"
-            buttonType="failure"
-            success={false}
-            handleClick={() => {
-              setIsOpenExpense(true);
-            }}
-          />
+      <div className={styles.cardsWrapper}>
+        <Card
+          title="Wallet Balance"
+          money={balance}
+          buttonText="+ Add Income"
+          buttonType="success"
+          handleClick={() => {
+            setIsOpenBalance(true);
+          }}
+        />
 
-          <ExpPieChart
-            data={[
-              { name: "Food", value: categorySpends.food },
-              { name: "Entertainment", value: categorySpends.entertainment },
-              { name: "Travel", value: categorySpends.travel },
-            ]}
-          />
-        </div>
+        <Card
+          title="Expenses"
+          money={expense}
+          buttonText="+ Add Expense"
+          buttonType="failure"
+          success={false}
+          handleClick={() => {
+            setIsOpenExpense(true);
+          }}
+        />
 
-        <div className={styles.transactionsWrapper}>
-          <TransList
-            transactions={expenseList}
-            editTransactions={setExpenseList}
-            title="Recent Transactions"
-            balance={balance}
-            setBalance={setBalance}
-          />
+        <ExpensePieChart
+          data={[
+            { name: "Food", value: categorySpends.food },
+            { name: "Entertainment", value: categorySpends.entertainment },
+            { name: "Travel", value: categorySpends.travel },
+          ]}
+        />
+      </div>
 
-          <ExpBarChart
-            data={[
-              { name: "Food", value: categorySpends.food },
-              { name: "Entertainment", value: categorySpends.entertainment },
-              { name: "Travel", value: categorySpends.travel },
-            ]}
-          />
-        </div>
+      {/* Transactions and bar chart wrapper */}
+      <div className={styles.transactionsWrapper}>
+        <TransactionList
+          transactions={expenseList}
+          editTransactions={setExpenseList}
+          title="Recent Transactions"
+          balance={balance}
+          setBalance={setBalance}
+        />
+
+        <ExpenseBarChart
+          data={[
+            { name: "Food", value: categorySpends.food },
+            { name: "Entertainment", value: categorySpends.entertainment },
+            { name: "Travel", value: categorySpends.travel },
+          ]}
+        />
       </div>
 
       {/* Modals */}
@@ -171,6 +175,6 @@ export default function Home() {
       <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
         <AddBalForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
       </Modal>
-    </>
+    </div>
   );
 }
