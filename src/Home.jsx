@@ -14,7 +14,7 @@ export default function Home() {
   const [expenseList, setExpenseList] = useState([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  //Show hide modals
+  // Show/hide modals
   const [isOpenExpense, setIsOpenExpense] = useState(false);
   const [isOpenBalance, setIsOpenBalance] = useState(false);
 
@@ -23,6 +23,7 @@ export default function Home() {
     entertainment: 0,
     travel: 0,
   });
+
   // eslint-disable-next-line
   const [categoryCount, setCategoryCount] = useState({
     food: 0,
@@ -31,7 +32,6 @@ export default function Home() {
   });
 
   useEffect(() => {
-    //Check localStorage
     const localBalance = localStorage.getItem("balance");
 
     if (localBalance) {
@@ -42,12 +42,10 @@ export default function Home() {
     }
 
     const items = JSON.parse(localStorage.getItem("expenses"));
-
-    setExpenseList(Array.isArray(items) ? items : []); 
+    setExpenseList(Array.isArray(items) ? items : []);
     setIsMounted(true);
   }, []);
 
-  // saving expense list in localStorage
   useEffect(() => {
     if (expenseList.length > 0 || isMounted) {
       localStorage.setItem("expenses", JSON.stringify(expenseList));
@@ -98,7 +96,6 @@ export default function Home() {
     });
   }, [expenseList, isMounted]);
 
-  // saving balance in localStorage
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("balance", balance);
@@ -106,75 +103,77 @@ export default function Home() {
   }, [balance, isMounted]);
 
   return (
-    <div className={styles.container}>
-      <h1>Expense Tracker</h1>
+    <>
+      <div className={styles.container}>
+        <h1>Expense Tracker</h1>
 
-      {/* Cards and pie chart wrapper */}
+        <div className={styles.cardsWrapper}>
+          <Card
+            title="Wallet Balance"
+            money={balance}
+            buttonText="+ Add Income"
+            buttonType="success"
+            handleClick={() => {
+              setIsOpenBalance(true);
+            }}
+          />
 
-      <div className={styles.cardsWrapper}>
-        <Card
-          title="Wallet Balance"
-          money={balance}
-          buttonText="+ Add Income"
-          buttonType="success"
-          handleClick={() => {
-            setIsOpenBalance(true);
-          }}
-        />
+          <Card
+            title="Expenses"
+            money={expense}
+            buttonText="+ Add Expense"
+            buttonType="failure"
+            success={false}
+            handleClick={() => {
+              setIsOpenExpense(true);
+            }}
+          />
 
-        <Card
-          title="Expenses"
-          money={expense}
-          buttonText="+ Add Expense"
-          buttonType="failure"
-          success={false}
-          handleClick={() => {
-            setIsOpenExpense(true);
-          }}
-        />
+          <ExpPieChart
+            data={[
+              { name: "Food", value: categorySpends.food },
+              { name: "Entertainment", value: categorySpends.entertainment },
+              { name: "Travel", value: categorySpends.travel },
+            ]}
+          />
+        </div>
 
-        <ExpPieChart
-          data={[
-            { name: "Food", value: categorySpends.food },
-            { name: "Entertainment", value: categorySpends.entertainment },
-            { name: "Travel", value: categorySpends.travel },
-          ]}
-        />
+        <div className={styles.transactionsWrapper}>
+          <TransList
+            transactions={expenseList}
+            editTransactions={setExpenseList}
+            title="Recent Transactions"
+            balance={balance}
+            setBalance={setBalance}
+          />
+
+          <ExpBarChart
+            data={[
+              { name: "Food", value: categorySpends.food },
+              { name: "Entertainment", value: categorySpends.entertainment },
+              { name: "Travel", value: categorySpends.travel },
+            ]}
+          />
+        </div>
       </div>
 
-      {/* Transactions and bar chart wrapper */}
-      <div className={styles.transactionsWrapper}>
-        <TransList
-          transactions={expenseList}
-          editTransactions={setExpenseList}
-          title="Recent Transactions"
-          balance={balance}
-          setBalance={setBalance}
-        />
+      {isOpenExpense && (
+        <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
+          <ExpenseForm
+            setIsOpen={setIsOpenExpense}
+            expenseList={expenseList}
+            setExpenseList={setExpenseList}
+            setBalance={setBalance}
+            balance={balance}
+          />
+        </Modal>
+      )}
 
-        <ExpBarChart
-          data={[
-            { name: "Food", value: categorySpends.food },
-            { name: "Entertainment", value: categorySpends.entertainment },
-            { name: "Travel", value: categorySpends.travel },
-          ]}
-        />
-      </div>
-
-      {/* Modals */}
-      <Modal isOpen={isOpenExpense} setIsOpen={setIsOpenExpense}>
-        <ExpenseForm
-          setIsOpen={setIsOpenExpense}
-          expenseList={expenseList}
-          setExpenseList={setExpenseList}
-          setBalance={setBalance}
-          balance={balance}
-        />
-      </Modal>
-
-      <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
-        <AddBalForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
-      </Modal>
-    </div>
+      {isOpenBalance && (
+        <Modal isOpen={isOpenBalance} setIsOpen={setIsOpenBalance}>
+          <AddBalForm setIsOpen={setIsOpenBalance} setBalance={setBalance} />
+        </Modal>
+      )}
+    </>
   );
 }
