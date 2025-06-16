@@ -3,15 +3,9 @@ import ReactModal from "react-modal";
 ReactModal.setAppElement("#root");
 
 export default function Modal({ isOpen, setIsOpen, children }) {
-  // Detect if running inside Cypress
   const isTest = typeof window !== "undefined" && window.Cypress;
 
   const customStyles = {
-    overlay: {
-      backgroundColor: isTest ? "transparent" : "rgba(0, 0, 0, 0.6)",
-      zIndex: isTest ? 0 : 1000,
-      pointerEvents: isTest ? "none" : "auto", // Prevent it from blocking clicks in tests
-    },
     content: {
       width: "95%",
       maxWidth: "572px",
@@ -24,7 +18,6 @@ export default function Modal({ isOpen, setIsOpen, children }) {
       border: "0",
       borderRadius: "15px",
       padding: "2rem",
-      transition: isTest ? "none" : "all 0.3s ease", // disable animation during test
     },
   };
 
@@ -35,7 +28,9 @@ export default function Modal({ isOpen, setIsOpen, children }) {
       shouldCloseOnOverlayClick={true}
       shouldCloseOnEsc={true}
       style={customStyles}
-      closeTimeoutMS={isTest ? 0 : 300} // Instantly close modal during tests
+      className="custom-modal-content"
+      overlayClassName={isTest ? "modal-overlay-test" : "modal-overlay"}
+      closeTimeoutMS={isTest ? 0 : 300}
     >
       {children}
     </ReactModal>
