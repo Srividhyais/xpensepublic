@@ -37,8 +37,8 @@ export default function Home() {
     if (localBalance) {
       setBalance(Number(localBalance));
     } else {
-      setBalance(5000);
-      localStorage.setItem("balance", 5000);
+      setBalance(0);
+      localStorage.setItem("balance", 0);
     }
 
     const items = JSON.parse(localStorage.getItem("expenses"));
