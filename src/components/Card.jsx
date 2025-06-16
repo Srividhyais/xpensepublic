@@ -13,12 +13,9 @@ export default function Card({
     <div className={styles.card}>
       <h3 className={styles.cardTitle}>
         {`${title}: `}
-         <h3 className={styles.cardTitle}>{title}:</h3>
-
-      <p className={success ? styles.success : styles.failure}
-      >
-        {`₹{money}`}
-      </p>
+        <span className={success ? styles.success : styles.failure}>
+          {`₹${money}`}
+        </span>
       </h3>
       <Button handleClick={handleClick} style={buttonType}>
         {buttonText}
