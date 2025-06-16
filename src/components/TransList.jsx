@@ -32,20 +32,13 @@ export default function TransList({
     setIsDisplayEditor(true);
   };
 
-  useEffect(() => {
-  if (Array.isArray(transactions)) {
+ useEffect(() => {
     const startIndex = (currentPage - 1) * maxRecords;
     const endIndex = Math.min(currentPage * maxRecords, transactions.length);
 
     setCurrentTransactions(transactions.slice(startIndex, endIndex));
     setTotalPages(Math.ceil(transactions.length / maxRecords));
-  } else {
-    console.error("transactions is not an array:", transactions);
-    setCurrentTransactions([]);
-    setTotalPages(0);
-  }
-}, [currentPage, transactions]);
-
+  }, [currentPage, transactions]);
 
   useEffect(() => {
     if (totalPages < currentPage && currentPage > 1) {
