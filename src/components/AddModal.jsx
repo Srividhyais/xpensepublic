@@ -1,11 +1,8 @@
 import ReactModal from "react-modal";
-import styles from "../Home.module.css";
 
 ReactModal.setAppElement("#root");
 
 export default function Modal({ isOpen, setIsOpen, children }) {
-  const isTest = typeof window !== "undefined" && window.Cypress;
-
   const customStyles = {
     content: {
       width: "95%",
@@ -21,17 +18,13 @@ export default function Modal({ isOpen, setIsOpen, children }) {
       padding: "2rem",
     },
   };
-
+  
   return (
     <ReactModal
       isOpen={isOpen}
       onRequestClose={() => setIsOpen(false)}
       shouldCloseOnOverlayClick={true}
-      shouldCloseOnEsc={true}
       style={customStyles}
-      className="custom-modal-content"
-      overlayClassName={isTest ? "modal-overlay-test" : "modal-overlay"}
-      closeTimeoutMS={isTest ? 0 : 300}
     >
       {children}
     </ReactModal>
